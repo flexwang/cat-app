@@ -14,8 +14,8 @@
         }
         .sphere {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 100px; /* Increased size for better visibility */
+            height: 100px; /* Increased size for better visibility */
             border-radius: 50%;
             background-color: #FF5722; /* Material Deep Orange */
             transition: transform 2s linear;
@@ -23,10 +23,12 @@
     </style>
 </head>
 <body>
+    <audio id="birdSound" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/10558/birds.mp3" preload="auto"></audio>
     <script>
         const colors = ["#FF5722", "#4CAF50", "#03A9F4", "#9C27B0", "#FFC107"];
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
+        const birdSound = document.getElementById("birdSound");
         
         function getRandomPosition() {
             let side = Math.floor(Math.random() * 4); // 0 = top, 1 = right, 2 = bottom, 3 = left
@@ -35,18 +37,18 @@
             switch (side) {
                 case 0: // Top
                     x = Math.random() * screenWidth;
-                    y = -50;
+                    y = -100;
                     break;
                 case 1: // Right
-                    x = screenWidth + 50;
+                    x = screenWidth + 100;
                     y = Math.random() * screenHeight;
                     break;
                 case 2: // Bottom
                     x = Math.random() * screenWidth;
-                    y = screenHeight + 50;
+                    y = screenHeight + 100;
                     break;
                 case 3: // Left
-                    x = -50;
+                    x = -100;
                     y = Math.random() * screenHeight;
                     break;
             }
@@ -62,6 +64,13 @@
             sphere.style.left = `${start.x}px`;
             sphere.style.top = `${start.y}px`;
             document.body.appendChild(sphere);
+            
+            birdSound.currentTime = 0;
+            birdSound.play(); // Play bird sound when sphere appears
+            
+            setTimeout(() => {
+                birdSound.pause(); // Stop playing after 3 seconds
+            }, 3000);
             
             setTimeout(() => {
                 let targetX = Math.random() * screenWidth;
