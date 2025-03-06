@@ -65,11 +65,12 @@
             sphere.style.top = `${start.y}px`;
             document.body.appendChild(sphere);
             
-            birdSound.currentTime = 0;
+            birdSound.currentTime = 2; // Start from 2 seconds
             birdSound.play(); // Play bird sound when sphere appears
             
             setTimeout(() => {
-                birdSound.pause(); // Stop playing after 3 seconds
+                birdSound.pause(); // Stop playing at 5 seconds
+                birdSound.currentTime = 0;
             }, 3000);
             
             setTimeout(() => {
