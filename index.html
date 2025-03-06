@@ -2,89 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Sphere Play</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cat Bird Game</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #F5F5F5; /* Material Grey 100 */
+            background-color: #80CBC4; /* Material teal */
             position: relative;
+            width: 100vw;
             height: 100vh;
         }
-        .sphere {
+        .bird {
             position: absolute;
-            width: 100px; /* Increased size for better visibility */
-            height: 100px; /* Increased size for better visibility */
-            border-radius: 50%;
-            background-color: #FF5722; /* Material Deep Orange */
-            transition: transform 2s linear;
+            width: 100px; /* Bigger bird */
+            height: 100px;
+            background-image: url('https://github.com/flexwang/cat-app/blob/main/bird.jpg');
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
 <body>
-    <audio id="birdSound" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/10558/birds.mp3" preload="auto"></audio>
+
+    <audio id="birdSound" src="https://www.xeno-canto.org/sounds/uploaded/YMCDPNVXBQ/XC609253-Turdus%20merula%2C%20song%20subsong%20%28xc%20sound%20edit%29.mp3"></audio>
+
     <script>
-        const colors = ["#FF5722", "#4CAF50", "#03A9F4", "#9C27B0", "#FFC107"];
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const birdSound = document.getElementById("birdSound");
-        
-        function getRandomPosition() {
-            let side = Math.floor(Math.random() * 4); // 0 = top, 1 = right, 2 = bottom, 3 = left
-            let x, y;
-            
-            switch (side) {
-                case 0: // Top
+        function getRandomEdgePosition() {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const edges = ['top', 'bottom', 'left', 'right'];
+            const edge = edges[Math.floor(Math.random() * edges.length)];
+            let x, y, dx, dy, flip;
+
+            switch (edge) {
+                case 'top':
                     x = Math.random() * screenWidth;
                     y = -100;
+                    dx = (Math.random() - 0.5) * 500;
+                    dy = screenHeight + 200;
+                    flip = dx < 0;
                     break;
-                case 1: // Right
-                    x = screenWidth + 100;
-                    y = Math.random() * screenHeight;
-                    break;
-                case 2: // Bottom
+                case 'bottom':
                     x = Math.random() * screenWidth;
                     y = screenHeight + 100;
+                    dx = (Math.random() - 0.5) * 500;
+                    dy = -screenHeight - 200;
+                    flip = dx < 0;
                     break;
-                case 3: // Left
+                case 'left':
                     x = -100;
                     y = Math.random() * screenHeight;
+                    dx = screenWidth + 200;
+                    dy = (Math.random() - 0.5) * 500;
+                    flip = false;
+                    break;
+                case 'right':
+                    x = screenWidth + 100;
+                    y = Math.random() * screenHeight;
+                    dx = -screenWidth - 200;
+                    dy = (Math.random() - 0.5) * 500;
+                    flip = true;
                     break;
             }
-            return { x, y };
+
+            return { x, y, dx, dy, flip };
         }
-        
-        function createSphere() {
-            let sphere = document.createElement("div");
-            sphere.classList.add("sphere");
-            sphere.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            
-            let start = getRandomPosition();
-            sphere.style.left = `${start.x}px`;
-            sphere.style.top = `${start.y}px`;
-            document.body.appendChild(sphere);
-            
-            birdSound.play(); // Play bird sound when sphere appears
-            
+
+        function spawnBird() {
+            const existingBird = document.querySelector('.bird');
+            if (existingBird) return;
+
+            const { x, y, dx, dy, flip } = getRandomEdgePosition();
+            const bird = document.createElement('div');
+            bird.classList.add('bird');
+            bird.style.left = `${x}px`;
+            bird.style.top = `${y}px`;
+            bird.style.transform = flip ? 'scaleX(-1)' : 'scaleX(1)';
+
+            document.body.appendChild(bird);
+            document.getElementById('birdSound').currentTime = 2; // Play bird sound from 2s mark
+            document.getElementById('birdSound').play();
+
+            bird.animate([
+                { transform: `translate(0, 0)` },
+                { transform: `translate(${dx}px, ${dy}px)` }
+            ], {
+                duration: 6000 + Math.random() * 4000, // 6-10 seconds flight
+                easing: 'linear'
+            });
+
             setTimeout(() => {
-                birdSound.pause(); // Stop playing at 5 seconds
-                birdSound.currentTime = 0;
-            }, 5000);
-            
-            setTimeout(() => {
-                let targetX = Math.random() * screenWidth;
-                let targetY = Math.random() * screenHeight;
-                sphere.style.transform = `translate(${targetX - start.x}px, ${targetY - start.y}px)`;
-            }, 100);
-            
-            setTimeout(() => {
-                sphere.remove();
-                createSphere();
-            }, 2500);
+                bird.remove();
+            }, 10000); // Remove bird after 10s
         }
-        
-        createSphere();
+
+        setInterval(spawnBird, 4000 + Math.random() * 3000); // New bird every 4-7 seconds
     </script>
+
 </body>
 </html>
