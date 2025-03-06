@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Sphere Play</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #F5F5F5; /* Material Grey 100 */
+            position: relative;
+            height: 100vh;
+        }
+        .sphere {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #FF5722; /* Material Deep Orange */
+            transition: transform 2s linear;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const colors = ["#FF5722", "#4CAF50", "#03A9F4", "#9C27B0", "#FFC107"];
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        function getRandomPosition() {
+            let side = Math.floor(Math.random() * 4); // 0 = top, 1 = right, 2 = bottom, 3 = left
+            let x, y;
+            
+            switch (side) {
+                case 0: // Top
+                    x = Math.random() * screenWidth;
+                    y = -50;
+                    break;
+                case 1: // Right
+                    x = screenWidth + 50;
+                    y = Math.random() * screenHeight;
+                    break;
+                case 2: // Bottom
+                    x = Math.random() * screenWidth;
+                    y = screenHeight + 50;
+                    break;
+                case 3: // Left
+                    x = -50;
+                    y = Math.random() * screenHeight;
+                    break;
+            }
+            return { x, y };
+        }
+        
+        function createSphere() {
+            let sphere = document.createElement("div");
+            sphere.classList.add("sphere");
+            sphere.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            let start = getRandomPosition();
+            sphere.style.left = `${start.x}px`;
+            sphere.style.top = `${start.y}px`;
+            document.body.appendChild(sphere);
+            
+            setTimeout(() => {
+                let targetX = Math.random() * screenWidth;
+                let targetY = Math.random() * screenHeight;
+                sphere.style.transform = `translate(${targetX - start.x}px, ${targetY - start.y}px)`;
+            }, 100);
+            
+            setTimeout(() => {
+                sphere.remove();
+                createSphere();
+            }, 2500);
+        }
+        
+        createSphere();
+    </script>
+</body>
+</html>
