@@ -81,7 +81,7 @@
             bird.style.transform = flip ? 'scaleX(-1)' : 'scaleX(1)';
 
             document.body.appendChild(bird);
-            document.getElementById('birdSound').currentTime = 2; // Play bird sound from 2s mark
+            document.getElementById('birdSound').currentTime = 0; // Play bird sound from 2s mark
             document.getElementById('birdSound').play();
 
             bird.animate([
@@ -97,7 +97,7 @@
             }, 10000); // Remove bird after 10s
         }
 
-        setInterval(spawnBird, 4000 + Math.random() * 3000); // New bird every 4-7 seconds
+        setInterval(spawnBird, Math.random() * 1000); // New bird every 4-7 seconds
     </script>
 
 </body>
